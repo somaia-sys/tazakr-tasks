@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إضافة مهمة</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>➕ إضافة مهمة جديدة</h2>
+
+    <label>المهمة:</label>
+    <input type="text" id="taskText" placeholder="أدخل نص المهمة" required>
+
+    <label>التاريخ والوقت:</label>
+    <input type="datetime-local" id="taskTime" required>
+
+    <label>نوع المهمة:</label>
+    <select id="taskType">
+      <option value="واجب">📘 واجب</option>
+      <option value="مشروع">🛠️ مشروع</option>
+      <option value="محاضرة">🕐 ميعاد محاضرة</option>
+      <option value="إشعار">📢 إشعار مهم</option>
+      <option value="اختبار">✏️ اختبار</option>
+    </select>
+
+    <label>الفئة:</label>
+    <select id="taskCategory">
+      <option value="العمل">📁 العمل</option>
+      <option value="المنزل">🏠 المنزل</option>
+      <option value="الدراسة">📚 الدراسة</option>
+      <option value="التسوق">🛒 التسوق</option>
+    </select>
+
+    <button onclick="addTask()">📥 حفظ المهمة</button>
+    <button onclick="location.href='index.html'">↩️ رجوع</button>
+
+    <p id="timeResult" style="color: #333; font-weight: bold;"></p>
+    <button id="timeRemainingBtn" onclick="showTimeRemaining()" style="margin-top: 10px;">⌛️ عرض الوقت المتبقي</button>
+    <p id="timeRemaining" style="color: #333; font-weight: bold;"></p>
+  </div>
+
+  <script>
+    // عرض التاريخ والوقت
+    document.getElementById("taskTime").addEventListener("input", function () {
+      const timeInput = this.value;
+      if (!timeInput) return;
+
+      const date = new Date(timeInput);
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      };
+      const formatted = date.toLocaleString('ar-EG', options);
+      document.getElementById("timeResult").textContent = `📅 المهمة ستكون في: ${formatted}`;
+    });
+
+    // إضافة مهمة جديدة
+    function addTask() {
+      const text = document.getElementById("taskText").value;
+      const time = document.getElementById("taskTime").value;
+      const type = document.getElementById("taskType").value;
+      const category = document.getElementById("taskCategory").value;
+
+      if (!text || !time) return alert("يرجى إدخال جميع البيانات");
+
+      const task = { text, time, type };
+      const tasks = JSON.parse(localStorage.getItem(category)) || [];
+      tasks.push(task);
+      localStorage.setItem(category, JSON.stringify(tasks));
+
+      alert("✅ تم حفظ المهمة بنجاح");
+      location.href = "list.html";
+    }
+
+    // عرض الوقت المتبقي
+    function showTimeRemaining() {
+      const timeInput = document.getElementById("taskTime").value;
+      if (!timeInput) return alert("يرجى إدخال تاريخ ووقت المهمة أولاً.");
+
+      const taskTime = new Date(timeInput);
+      const now = new Date();
+      const timeDiff = taskTime - now;
+
+      if (timeDiff <= 0) {
+        document.getElementById("timeRemaining").textContent = "❌ المهمة قد مضت بالفعل.";
+      } else {
+        const hours = Math.floor(timeDiff / 1000 / 60 / 60);
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / 1000 / 60);
+        document.getElementById("timeRemaining").textContent = `⏳ الوقت المتبقي: ${hours} ساعة و ${minutes} دقيقة`;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>عرض المهام</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>عرض المهام القادمة</h1>
+        <div id="task-list"></div>
+        <button onclick="window.location.href='index.html'">عودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <script>
+        // طلب إذن من المتصفح لإظهار الإشعارات
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+
+        // دالة لعرض التنبيهات إذا كان موعد المهمة قريب
+        function showTaskNotification(task) {
+            const taskDate = new Date(task.due);
+            const now = new Date();
+            const timeDifference = taskDate - now;
+
+            // إذا كانت المهمة ستحدث خلال أقل من 4 ساعات
+            if (timeDifference > 0 && timeDifference <= 4 * 60 * 60 * 1000) {
+                // عرض إشعار للمستخدم
+                if (Notification.permission === "granted") {
+                    new Notification(`تنبيه: ${task.name}`, {
+                        body: `المهمة "${task.name}" ستحدث في أقل من 4 ساعات.`,
+                        icon: "icon.png",  // يمكنك إضافة أي صورة رمز هنا
+                    });
+                }
+            }
+        }
+
+        // تحميل المهام عند فتح الصفحة
+        function loadTasks() {
+            const taskList = document.getElementById("task-list");
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+            taskList.innerHTML = ""; // Clear previous list
+
+            tasks.forEach((task) => {
+                const taskDate = new Date(task.due);
+                const now = new Date();
+                const timeDifference = taskDate - now;
+
+                // عرض كل مهمة في صفحة عرض المهام
+                let taskItem = document.createElement("div");
+                taskItem.classList.add("task");
+
+                let taskText = `
+                    <h3>${task.name}</h3>
+                    <p>${task.details}</p>
+                    <p>الموعد المحدد: ${taskDate.toLocaleString()}</p>
+                `;
+
+                if (timeDifference > 0) {
+                    let timeRemaining = Math.floor(timeDifference / (1000 * 60 * 60)); // hours
+                    taskText += `<p>المتبقي: ${timeRemaining} ساعة</p>`;
+                } else {
+                    taskText += `<p>المهمة قد فات موعدها.</p>`;
+                }
+
+                taskItem.innerHTML = taskText;
+                taskList.appendChild(taskItem);
+
+                // استدعاء دالة التنبيه للمهمة
+                showTaskNotification(task);
+            });
+        }
+
+        // تحميل المهام عند تحميل الصفحة
+        window.onload = loadTasks;
+    </script>
+</body>
+</html>

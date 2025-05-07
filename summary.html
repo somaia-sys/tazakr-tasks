@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>ملخص الإنجاز</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>ملخص الإنجاز</h1>
+        <div id="completed-tasks"></div>
+        <button onclick="window.location.href='index.html'">عودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <script>
+        function loadCompletedTasks() {
+            const completedTasksContainer = document.getElementById("completed-tasks");
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+            completedTasksContainer.innerHTML = ""; // Clear previous list
+
+            tasks.forEach(task => {
+                // Here you can add a way to mark tasks as completed
+                // For simplicity, let's assume all tasks are completed for now
+                let taskItem = document.createElement("div");
+                taskItem.classList.add("task");
+
+                let taskText = `
+                    <h3>${task.name}</h3>
+                    <p>${task.details}</p>
+                    <p>الموعد المحدد: ${new Date(task.due).toLocaleString()}</p>
+                    <p>تم إنجاز المهمة</p>
+                `;
+
+                taskItem.innerHTML = taskText;
+                completedTasksContainer.appendChild(taskItem);
+            });
+        }
+
+        window.onload = loadCompletedTasks;
+    </script>
+</body>
+</html>

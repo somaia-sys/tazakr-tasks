@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>التنبيهات</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>التنبيهات القادمة</h1>
+        <div id="notifications-list"></div>
+        <button onclick="window.location.href='index.html'">عودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <script>
+        function loadNotifications() {
+            const notificationsList = document.getElementById("notifications-list");
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            const now = new Date();
+
+            notificationsList.innerHTML = ""; // Clear previous notifications
+
+            tasks.forEach(task => {
+                const taskDate = new Date(task.due);
+                const timeDifference = taskDate - now;
+
+                if (timeDifference > 0 && timeDifference <= 4 * 60 * 60 * 1000) {
+                    let notification = document.createElement("div");
+                    notification.classList.add("notification");
+
+                    notification.innerHTML = `
+                        <h3>تنبيه: ${task.name}</h3>
+                        <p>المهمة "${task.name}" ستحدث في أقل من 4 ساعات.</p>
+                    `;
+
+                    notificationsList.appendChild(notification);
+                }
+            });
+        }
+
+        window.onload = loadNotifications;
+    </script>
+</body>
+</html>

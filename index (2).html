@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+    }
+    .login-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #5ca8e6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <h2>تسجيل الدخول</h2>
+  <input type="text" id="username" placeholder="اسم المستخدم">
+  <button onclick="login()">دخول</button>
+</div>
+
+<script>
+  function login() {
+    const username = document.getElementById("username").value.trim();
+    if (username) {
+      localStorage.setItem("loggedInUser", username);
+      window.location.href = "index.html"; // الانتقال للصفحة الرئيسية
+    } else {
+      alert("يرجى إدخال اسم المستخدم");
+    }
+  }
+
+  // إذا كان المستخدم مسجلاً فعلاً، انقله للصفحة الرئيسية مباشرة
+  if (localStorage.getItem("loggedInUser")) {
+    window.location.href = "index.html";
+  }
+</script>
+
+</body>
+</html>
